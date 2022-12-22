@@ -1,0 +1,50 @@
+#include "heroplane.h"
+#include "config.h"
+
+heroplane::heroplane()
+{
+    m_Plane.load(HERO_PATH);
+    m_planex = GAME_WIDTH * 0.5 - m_Plane.width()*0.5;
+    m_planey = GAME_HEIGHT - m_Plane.height();
+    //初始化矩形框
+    m_Rect.setWidth(m_Plane.width());
+    m_Rect.setHeight(m_Plane.height());
+    m_Rect.moveTo(m_planex,m_planey);
+    //初始化发射间隔时间
+    m_recorder = 0;
+}
+
+void heroplane::shoot()
+{
+    //累加时间间隔记录变量
+    m_recorder++;
+    //判断如果记录数字 未达到发射间隔，直接return
+    if(m_recorder < BULLET_INTERVAL)
+    {
+        return;
+    }
+    //达到发射时间处理
+    //重置发射时间间隔记录
+    m_recorder = 0;
+    //发射子弹
+    for(int i = 0; i < BULLET_NUM; i++)
+    {
+        //如果是空闲的子弹进行发射
+        if(m_bullets[i].m_Free)
+        {
+            //将子弹的空闲状态改为假
+            m_bullets[i].m_Free = false;
+            //设置发射的子弹坐标
+            m_bullets[i].m_X = m_planex + m_Rect.width()*0.5 - 10;
+            m_bullets[i].m_Y = m_planey - 25;
+            break;
+        }
+    }
+}
+
+void heroplane::setPosition(int x, int y)
+{
+    m_planex = x;
+    m_planey = y;
+    m_Rect.moveTo(m_planex,m_planey);
+}
